@@ -12,7 +12,7 @@ int main(int argc, const char * argv[])
 {
 //	std::cout << "work damnit" << std::endl;
     CvCapture* capture = cvCreateFileCapture("/Users/agata/Desktop/CodingProjects/BTSimple/BallTracking/Fail.MOV"); //change this to be the path to your video file
-    CvCapture* capture2 = cvCreateFileCapture("/Users/agata/Desktop/Fail_track.mov");
+    //CvCapture* capture2 = cvCreateFileCapture("/Users/agata/Desktop/Fail_track.mov");
     //IplImage* frame;// = NULL;
     cv::Mat frame;
 
@@ -28,9 +28,9 @@ int main(int argc, const char * argv[])
                      (int)cvGetCaptureProperty( capture,
                                                CV_CAP_PROP_FRAME_HEIGHT)
                      );
-    //size.height = size.height;
-    size.width = size.width*2;
-    CvVideoWriter *writer = cvCreateVideoWriter("/Users/agata/Desktop/vidtry_combo.mov",CV_FOURCC('m', 'p', '4', 'v'),15,size,1);
+    size.height = 2*size.height;
+    //size.width = size.width*2;
+    //CvVideoWriter *writer = cvCreateVideoWriter("/Users/agata/Desktop/vidtry_combo2.mov",CV_FOURCC('m', 'p', '4', 'v'),15,size,1);
 
     int width = (int)cvGetCaptureProperty(capture,CV_CAP_PROP_FRAME_WIDTH);
     int height = (int)cvGetCaptureProperty(capture,CV_CAP_PROP_FRAME_HEIGHT);
@@ -174,12 +174,12 @@ int main(int argc, const char * argv[])
 
 
         IplImage frame1 = frame;
-        cv::Mat frame_two = (cv::Mat)cvQueryFrame(capture2);
+      //  cv::Mat frame_two = (cv::Mat)cvQueryFrame(capture2);
         cv::Mat out_image;
-        CombineImages (frame_two, frame, out_image);
+     //   CombineImages (frame_two, frame, out_image);
         IplImage frameOut =out_image;
-        cvShowImage("Example2",&frameOut);
-        cvWriteFrame(writer, &frameOut );
+        cvShowImage("Example2",&frame1);
+  //      cvWriteFrame(writer, &frameOut );
 
         char c = cvWaitKey(1);
         if( c == 27 ) break;
@@ -189,7 +189,7 @@ int main(int argc, const char * argv[])
 
 
     cvReleaseCapture(&capture);
-    cvReleaseVideoWriter( &writer );
+//    cvReleaseVideoWriter( &writer );
     cvDestroyWindow( "Example2" );
 
     return 0;
@@ -237,14 +237,14 @@ void GetBallCenter (Pointlist &centers, cv::Mat &frame, int &rad_new){
 void CombineImages (cv::Mat &frame1, cv::Mat &frame2, cv::Mat &out_image){
 
 	CvSize new_window_size;// = CvSize(new_width, new_height);
-	new_window_size.width = frame1.cols + frame2.cols;
-	new_window_size.height = frame1.rows;
+	new_window_size.width = frame1.cols;
+	new_window_size.height = frame1.rows +frame2.rows;
 	cv::Mat roi;
 
 	out_image = cv::Mat(new_window_size, CV_8UC3);
 	roi = cv::Mat(out_image, cv::Rect(0, 0, frame1.cols, frame1.rows));
 	frame1.copyTo(roi);
-	roi = cv::Mat(out_image, cv::Rect(frame1.cols, 0, frame2.cols, frame2.rows));
+	roi = cv::Mat(out_image, cv::Rect(0, frame1.rows, frame2.cols, frame2.rows));
 	frame2.copyTo(roi);
 
 }
